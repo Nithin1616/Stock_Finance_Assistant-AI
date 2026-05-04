@@ -179,8 +179,8 @@ from rag_pipeline import load_embedding_model, build_rag_context
 from llm_engine import get_llm_response
 
 # ── Config ────────────────────────────────────────────────────────────────────
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-NEWS_API_KEY  = os.getenv("NEWS_API_KEY", "")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "") or st.secrets.get("GROQ_API_KEY", "")
+NEWS_API_KEY  = os.getenv("NEWS_API_KEY", "") or st.secrets.get("NEWS_API_KEY", "")
 
 # ── Session State ─────────────────────────────────────────────────────────────
 for k, v in {
