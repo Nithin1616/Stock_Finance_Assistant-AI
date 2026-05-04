@@ -226,41 +226,6 @@ TICKER_MAP = {
     "meta": "META", "facebook": "META", "nvidia": "NVDA",
     "netflix": "NFLX", "amd": "AMD", "intel": "INTC",
     "samsung": "005930.KS", "alibaba": "BABA",
-    # Entertainment & Media
-    "disney": "DIS", "walt disney": "DIS",
-    "netflix": "NFLX", "spotify": "SPOT",
-    "warner": "WBD", "paramount": "PARA",
-    # Finance US
-    "jpmorgan": "JPM", "jp morgan": "JPM",
-    "goldman": "GS", "goldman sachs": "GS",
-    "morgan stanley": "MS", "blackrock": "BLK",
-    "berkshire": "BRK-B", "visa": "V",
-    "mastercard": "MA", "paypal": "PYPL",
-    "american express": "AXP", "amex": "AXP",
-    # Consumer
-    "coca cola": "KO", "coke": "KO",
-    "pepsi": "PEP", "pepsico": "PEP",
-    "nike": "NKE", "walmart": "WMT",
-    "mcdonalds": "MCD", "mcdonald": "MCD",
-    "starbucks": "SBUX", "costco": "COST",
-    "target": "TGT", "home depot": "HD",
-    # Tech US
-    "uber": "UBER", "airbnb": "ABNB",
-    "zoom": "ZM", "shopify": "SHOP",
-    "palantir": "PLTR", "coinbase": "COIN",
-    "snap": "SNAP", "snapchat": "SNAP",
-    "twitter": "X", "amd": "AMD",
-    "qualcomm": "QCOM", "intel": "INTC",
-    "oracle": "ORCL", "salesforce": "CRM",
-    "adobe": "ADBE", "ibm": "IBM",
-    # Energy & Industrial
-    "exxon": "XOM", "chevron": "CVX",
-    "boeing": "BA", "caterpillar": "CAT",
-    "ford": "F", "general motors": "GM",
-    # Pharma US
-    "pfizer": "PFE", "johnson": "JNJ",
-    "abbvie": "ABBV", "merck": "MRK",
-    "moderna": "MRNA",
 }
 
 STOPWORDS = {"OF","IN","AT","IS","IT","BE","DO","GO","IF","OR","AN","AS","BY",
@@ -368,25 +333,22 @@ def make_sector_chart():
     return fig
 
 def needs_chart(query: str, ticker: str = "") -> str:
-    """Only show charts when explicitly relevant."""
+    """Detect what kind of chart to show based on query — always return something."""
     q = query.lower()
-    # Market overview — explicit market questions
+    # Market overview queries
     if any(w in q for w in ["market today", "market overview", "global market",
                               "how was the market", "market trend", "indices",
-                              "world market", "stock market today", "show market",
-                              "market performance"]):
+                              "world market", "stock market today"]):
         return "market_overview"
     # Sector queries
     if any(w in q for w in ["sector", "sectors", "indian market",
                               "india market", "nse sector"]):
         return "sector"
-    # Stock chart — only when user explicitly asks for visual
-    if ticker and any(w in q for w in ["chart", "graph", "visual", "trend",
-                                        "price history", "performance", "show",
-                                        "how has", "movement", "52 week"]):
+    # If a specific stock is detected → always show price chart
+    if ticker:
         return "stock_chart"
-    # All other queries — no chart
-    return "none"
+    # General finance/news question without specific stock → show market overview
+    return "market_overview"
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
@@ -506,11 +468,13 @@ with main:
     with input_col:
         user_query = st.text_input(
             "msg",
-            value="",
+            value=st.session_state.get("pending_question", ""),
             placeholder="Ask about any stock, market trend, or financial news...",
-            key=f"chat_input_{len(st.session_state.chat_history)}",
+            key="chat_input",
             label_visibility="collapsed",
         )
+        if "pending_question" in st.session_state:
+            del st.session_state["pending_question"]
 
     with btn_col:
         st.markdown('<div class="send-btn">', unsafe_allow_html=True)
