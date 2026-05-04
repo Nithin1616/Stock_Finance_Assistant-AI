@@ -1,0 +1,16 @@
+streamlit
+langchain
+langchain-groq
+langchain-community
+faiss-cpu
+sentence-transformers
+yfinance
+plotly
+PyPDF2
+requests
+python-dotenv
+newsapi-python
+pandas
+numpy
+tiktoken
+torchvision
