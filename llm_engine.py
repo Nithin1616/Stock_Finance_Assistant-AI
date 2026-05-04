@@ -1,5 +1,5 @@
 from langchain_groq import ChatGroq
-from langchain.schema import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 from typing import List, Dict
 
 
@@ -7,7 +7,7 @@ SYSTEM_PROMPT = """You are FinSight AI, an expert financial research assistant w
 
 You have access to real-time stock data and latest news provided as context. Use this context as your PRIMARY source for current prices, recent news, and live metrics.
 
-Your role:
+Your role
 - Answer questions about stocks, markets, indices, and financial concepts
 - Use real-time context data for current prices, news, and metrics
 - Use your own financial knowledge for historical context, explanations, and general market education
