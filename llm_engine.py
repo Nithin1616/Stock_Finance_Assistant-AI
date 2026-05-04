@@ -1,5 +1,5 @@
 from langchain_groq import ChatGroq
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain.schema import HumanMessage, SystemMessage
 from typing import List, Dict
 
 
@@ -47,17 +47,18 @@ def get_llm_response(
             if msg["role"] == "user":
                 messages.append(HumanMessage(content=msg["content"]))
             elif msg["role"] == "assistant":
-                from langchain_core.messages import AIMessage
+                from langchain.schema import AIMessage
                 messages.append(AIMessage(content=msg["content"]))
 
         # Add current query with context
-        user_message = f"""Context (Real-time data retrieved just now):
+        user_message = f"""Here is the real-time financial data fetched right now for your reference:
+
 {context}
 
 ---
 User Question: {query}
 
-Please answer based on the provided context above."""
+Use the real-time data above to answer accurately. If specific data is present in the context, use it directly and state the exact figures. If the context is empty, use your financial knowledge to answer."""
 
         messages.append(HumanMessage(content=user_message))
 
